@@ -371,7 +371,7 @@ pub fn phantom_fields(input: TokenStream) -> TokenStream {
             // https://graphics.stanford.edu/~seander/bithacks.html#ConditionalSetOrClearBitsWithoutBranching
             #[allow(missing_docs)]
             pub const fn #with_name(self, bit: bool) -> Self {
-              Self(self.0 ^ (((#self_member_type::wrapping_sub(0, bit as #self_member_type) ^ self.0) & #const_ident)))
+              Self(self.0 ^ (((#self_member_type::wrapping_sub(0, bit as #self_member_type) ^ self.0) & #const_ident as #self_member_type)))
             }
           })
         ));
