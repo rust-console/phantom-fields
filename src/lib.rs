@@ -8,9 +8,7 @@ use proc_macro2::Span;
 use quote::quote;
 use syn::{
   parse::{Parse, ParseStream, Result},
-  parse_macro_input,
-  spanned::Spanned,
-  Attribute, Error, Ident, LitInt, Token, Type, TypePath,
+  parse_macro_input, Attribute, Error, Ident, LitInt, Token, TypePath,
 };
 
 // Phantom Fields
@@ -43,7 +41,7 @@ enum PhantomEntry {
 }
 
 struct PhantomFields {
-  self_member_type: Type,
+  self_member_type: TypePath,
   entries: Vec<PhantomEntry>,
 }
 
@@ -56,19 +54,7 @@ impl Parse for PhantomFields {
       return Err(Error::new(lit.span(), "Currently only self.0 is supported"));
     }
     let _ = input.parse::<Token![:]>()?;
-    let self_member_type: Type = {
-      let tp = input.parse::<TypePath>()?;
-      let tp_end_string = match tp.path.segments.last().expect("no type given") {
-        syn::punctuated::Pair::Punctuated(path_segment, _colon2) => path_segment.ident.to_string(),
-        syn::punctuated::Pair::End(path_segment) => path_segment.ident.to_string(),
-      };
-      match tp_end_string.as_ref() {
-        "u8" | "i8" | "u16" | "i16" | "u32" | "i32" | "usize" | "isize" | "u64" | "i64" => Type::Path(tp),
-        _ => {
-          return Err(Error::new(tp.span(), format!("Unsupported target type: {:?}", tp_end_string)));
-        }
-      }
-    };
+    let self_member_type: TypePath = input.parse::<TypePath>()?;
     let _ = input.parse::<Token![,]>()?;
     //
     let mut entries: Vec<PhantomEntry> = vec![];
