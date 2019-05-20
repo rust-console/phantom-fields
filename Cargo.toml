@@ -1,0 +1,16 @@
+[package]
+name = "phantom-fields"
+description = "proc-macro for sub-fields inside of an integer value."
+version = "0.1.0"
+authors = ["Lokathor <zefria@gmail.com>"]
+repository = "https://github.com/Lokathor/phantom-fields"
+edition = "2018"
+license = "0BSD"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version="0.15", features = ["full", "extra-traits"] }
+quote = "0.6"
+proc-macro2 = "0.4"
